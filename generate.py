@@ -41,6 +41,7 @@ STYLE = ("<style>text{font:400 6.5px " + MONO + ";letter-spacing:1.2px;fill:#5E6
 
 
 def dday_svg(today):
+    """W3 "FLASHBACK" LED board (330 x 210): dark board with LED panels + light route track below."""
     dnum = (today - START).days + 1
     n = 1
     while anniv(n) <= today:
@@ -52,65 +53,43 @@ def dday_svg(today):
     p = max(0.0, min(1.0, dayi / cycle))
     pct = round(p * 100)
     num = f"D+{dnum}" if dnum > 0 else f"D-{1 - dnum}"
-    Y = 178
+    Y = 186
     mx = 9 + 311 * p
-    label = f"{n}周年まで あと {left}日 ・ {nxt:%Y.%m.%d} ・ 記録は続く ・ "
-    tw = round(len(label.rstrip(' ・')) * 11.6)
-    px = 330 - (len(f"{pct}%") * 4.6 + 6)
-    # entry motion (SMIL, timed from image load so it lines up with the page's intro)
-    B = 2.1
-    E = "calcMode='spline' keyTimes='0;1' keySplines='.16 1 .3 1'"
-    def at(x):
-        return f"{B + x:.2f}s"
-    # The entry motion now lives in the page CSS (a mask wipe per row), because an SVG
-    # background's own timeline can start before the page is shown (or be reused from cache).
-    def rise(body, x, dy=8):
-        return body
-    def grow(attrs, w, x, d=.7, x0=None, x1=None):
-        return f"<rect {attrs} width='{w}'{f' x={chr(39)}{x1}{chr(39)}' if x1 is not None else ''}/>"
-    def pop(cx, r, x, extra=""):
-        return f"<circle cx='{cx}' cy='{Y}' r='{r}'{extra}/>"
-    def ripple(b):
-        return (f"<circle cx='{mx:.0f}' cy='{Y}' r='9' fill-opacity='0'><animate attributeName='r' values='9;20' keyTimes='0;1' calcMode='spline' "
-                f"keySplines='.2 .7 .3 1' dur='3.6s' begin='{b - 1.9:.1f}s' repeatCount='indefinite'/><animate attributeName='fill-opacity' values='.13;0' "
-                f"dur='3.6s' begin='{b - 1.9:.1f}s' repeatCount='indefinite'/></circle>")
-    svg = (f"<svg xmlns='http://www.w3.org/2000/svg' width='330' height='200'>{STYLE}"
-        "<defs><clipPath id='q'><rect x='48' y='114' width='278' height='28'/></clipPath>"
-        "<clipPath id='r'><rect y='60' height='20' width='330'/></clipPath>"
-        "<clipPath id='t'><rect y='160' height='40' width='330'/></clipPath></defs>"
-        + rise("<text y='8'>記録対象 — SUBJECT</text>"
-               f"<text class='j' y='42' style='font-size:26px;font-weight:900;letter-spacing:0'>{esc(NAME)}</text>"
-               f"<text y='56' style='fill:#3A3E40'>SINCE {START:%Y.%m.%d}</text>", 0)
-        + rise("<text x='330' y='8' text-anchor='end'>経過日数 · ELAPSED</text>"
-               f"<circle cx='238' cy='5.6' r='2.6' fill='{BLUE}' stroke='{INK}'/>"
-               f"<text class='b' x='330' y='44' text-anchor='end' style='font-size:32px'>{num}</text>", .08, 12)
-        + rise(f"<text x='{px - 2:.0f}' y='60' text-anchor='end' style='fill:#3A3E40'>DAY {dayi:03d} / {cycle} · </text>", .22, 4)
-        + grow(f"y='53.5' height='9' fill='{YEL}'", f"{331 - px:.0f}", .3, .5, f"{px - 1:.0f}", f"{px - 1:.0f}")
-        + rise(f"<text x='{px + 2:.0f}' y='60.3' style='fill:{INK}'>{pct}%</text>", .45, 0)
-        + "<g clip-path='url(#r)'><path d='M0 74H330' stroke='#8a8b8b'/><path d='M0 72H330' stroke='#999' stroke-width='3' stroke-dasharray='1 5'/>"
-          "<path d='M0 71H330' stroke='#999' stroke-width='5' stroke-dasharray='1 29'/></g>"
-        + grow(f"y='80' height='27.5' fill='{INK}'", 330, .35, .7)
-        + grow(f"y='83.5' height='24' fill='{BLUE}'", 163, .45, .7)
-        + grow(f"y='83.5' height='24' fill='{BLUE}'", 163, .45, .7, 330, 167)
-        + rise("<text class='j' x='11' y='99.5'>◀ きのう</text>", .75, 0)
-        + rise("<text class='j' x='319' y='99.5' text-anchor='end'>あした ▶</text>", .8, 0)
-        + grow(f"y='114' height='28' rx='3' fill='{INK}'", 330, .6, .7)
-        + rise(f"<path d='M3 114h41v28H3a3 3 0 0 1-3-3v-22a3 3 0 0 1 3-3z' fill='{CREAM}'/>"
-               "<text class='j' x='22' y='126' text-anchor='middle' style='font-size:9px;letter-spacing:0'>次は</text>"
-               "<text class='j' x='22' y='137' text-anchor='middle' style='font-size:9px;letter-spacing:0'>NEXT</text>", .85, 6)
-        + f"<g clip-path='url(#q)'><text class='j' x='326' y='132' textLength='{tw}' style='fill:{CREAM};font-weight:700'>{label.rstrip(' ・')}"
-          f"<animateTransform attributeName='transform' type='translate' from='0 0' to='-{tw + 278} 0' dur='{(tw + 278) / 36:.2f}s' repeatCount='indefinite'/></text></g>"
-        + f"<g clip-path='url(#t)'><path d='M9 {Y}H320' stroke='#DCDFE3' stroke-width='6'/><path d='M15 {Y}H{max(15, mx - 9):.0f}' stroke='{INK}' stroke-width='6'/></g>"
-        + f"<g fill='#fff' stroke='{INK}' stroke-width='3.2'>"
-        + "".join(pop(cx, 6, .9 + k * .09) for k, cx in enumerate((9, 87, 165, 243)))
-        + pop(320, 8.5, 1.26, " stroke-width='2.6'") + pop(320, 5, 1.32, f" fill='{CREAM}' stroke-width='2'") + "</g>"
-        + rise(ripple(1.9) + ripple(3.7)
-               + f"<rect x='{mx - 20:.0f}' y='146' width='40' height='15' fill='{INK}'/>"
-               f"<text class='j' x='{mx:.0f}' y='157' text-anchor='middle' style='font-size:9px;letter-spacing:0;fill:#fff'>現在地</text>"
-               f"<circle cx='{mx:.0f}' cy='{Y}' r='9' fill='{BLUE}' stroke='{INK}' stroke-width='4'/>", 1.35, -14)
-        + rise(f"<text class='v' y='198' style='font-size:8.5px;letter-spacing:1.6px'>START</text>"
-               f"<text class='v' x='330' y='198' text-anchor='end' style='font-size:8.5px;letter-spacing:1.6px'>{ordinal(n)}</text>", 1.0, 4)
-        + "</svg>")
+    label = f"※{n}周年まで あと {left}日 ・ {nxt:%Y.%m.%d} ・ 記録は続く"
+    tw = round(len(label) * 10.6)
+    J = "font-family:" + JP.replace("'", "&apos;")
+    def panel(x, y, w, h, body):
+        return (f"<rect x='{x}' y='{y}' width='{w}' height='{h}' rx='1.5' fill='#0E0F10' stroke='#000'/>{body}"
+                f"<rect x='{x}' y='{y}' width='{w}' height='{h}' fill='url(#L)'/>"
+                f"<path d='M{x} {y + h + 1}H{x + w}' stroke='#5E6366' stroke-width='1.5'/>")
+    nw = len(NAME) * 22 + 8
+    svg = (f"<svg xmlns='http://www.w3.org/2000/svg' width='330' height='210'>{STYLE}"
+        "<defs><linearGradient id='g' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='#232526'/><stop offset='1' stop-color='#1A1C1D'/></linearGradient>"
+        "<pattern id='L' width='1.5' height='1.5' patternUnits='userSpaceOnUse'><path d='M0 0h1.5v1.5H0zM.75 .2a.55 .55 0 1 0 .001 0z' fill='#111213' fill-opacity='.62' fill-rule='evenodd'/></pattern>"
+        "<clipPath id='q'><rect x='9' y='128' width='312' height='20'/></clipPath></defs>"
+        "<rect x='.5' y='.5' width='329' height='151' rx='4' fill='url(#g)' stroke='#000'/>"
+        "<text x='10' y='14' style='font-size:5.5px;letter-spacing:1.6px;fill:#8F9497'>記録対象 · SUBJECT</text>"
+        f"<text x='10' y='24' style='font-size:5.5px;letter-spacing:1.6px'>SINCE {START:%Y.%m.%d}</text>"
+        f"<rect x='261' y='7' width='14' height='30' fill='{YEL}'/>"
+        f"<text x='282' y='27' style='{J};font-size:18px;font-weight:500;letter-spacing:0;fill:#fff'>記録</text>"
+        "<text x='282' y='35' style='font-family:Arial,sans-serif;font-size:5.5px;letter-spacing:.4px;fill:#A9AFB2'>record</text>"
+        + panel(8, 42, 314, 34,
+                f"<rect x='14' y='46' width='{nw}' height='26' fill='{BLUE}'/>"
+                f"<text class='j' x='18' y='67' style='font-size:22px;font-weight:900;letter-spacing:0;fill:#10283A'>{esc(NAME)}</text>"
+                f"<text class='b' x='312' y='70' text-anchor='end' style='font-size:26px;fill:{YEL}'>{num}</text>")
+        + panel(8, 80, 314, 20, f"<text class='j' x='165' y='93.5' text-anchor='middle' style='font-size:9px;font-weight:700;letter-spacing:2.2px;fill:#F3F4F3'>{dayi}日目 ・ DAY {dayi:03d} / {cycle} ・ {pct}%</text>")
+        + panel(8, 104, 314, 20, f"<text class='j' x='165' y='117.5' text-anchor='middle' style='font-size:9px;font-weight:700;letter-spacing:2.2px;fill:{YEL}'>◀ きのう ・ きょう ・ あした ▶</text>")
+        + panel(8, 128, 314, 20,
+                f"<g clip-path='url(#q)'><text class='j' x='322' y='141.5' textLength='{tw}' style='font-size:9px;font-weight:700;letter-spacing:1.4px;fill:{CREAM}'>{label}"
+                f"<animateTransform attributeName='transform' type='translate' from='0 0' to='-{tw + 314} 0' dur='{(tw + 314) / 36:.2f}s' repeatCount='indefinite'/></text></g>")
+        + f"<path d='M9 {Y}H320' stroke='#DCDFE3' stroke-width='5'/><path d='M0 {Y}H{max(9, mx - 8):.0f}' stroke='{BLUE}' stroke-width='5'/>"
+        + f"<g fill='#fff' stroke='{INK}' stroke-width='2.8'>" + "".join(f"<circle cx='{x}' cy='{Y}' r='5'/>" for x in (9, 87, 165, 243)) + "</g>"
+        + f"<circle cx='320' cy='{Y}' r='7.5' fill='#fff' stroke='{INK}' stroke-width='2.4'/><circle cx='320' cy='{Y}' r='4.2' fill='{CREAM}'/>"
+        + "".join(f"<circle cx='{mx:.0f}' cy='{Y}' r='9' fill-opacity='0'><animate attributeName='r' values='9;20' keyTimes='0;1' calcMode='spline' keySplines='.2 .7 .3 1' dur='3.6s' begin='{b}s' repeatCount='indefinite'/><animate attributeName='fill-opacity' values='.13;0' dur='3.6s' begin='{b}s' repeatCount='indefinite'/></circle>" for b in (0, 1.8))
+        + f"<rect x='{mx - 18:.0f}' y='157' width='36' height='13' fill='{INK}'/><text class='j' x='{mx:.0f}' y='166.6' text-anchor='middle' style='font-size:8px;letter-spacing:0;fill:#fff'>現在地</text>"
+        + f"<circle cx='{mx:.0f}' cy='{Y}' r='8' fill='{BLUE}' stroke='{INK}' stroke-width='3.4'/>"
+        + f"<text class='v' y='205' style='font-size:7.5px;letter-spacing:1.4px'>START</text>"
+        + f"<text class='v' x='330' y='205' text-anchor='end' style='font-size:7.5px;letter-spacing:1.4px'>{ordinal(n)}</text></svg>")
     return svg, f"{num} · {n}周年まで{left}日 · {pct}%"
 
 
