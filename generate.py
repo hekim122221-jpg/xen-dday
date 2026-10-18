@@ -52,13 +52,13 @@ def dday_svg(today):
     p = max(0.0, min(1.0, dayi / cycle))
     pct = round(p * 100)
     num = f"D+{dnum}" if dnum > 0 else f"D-{1 - dnum}"
-    Y = 196
+    Y = 178
     mx = 9 + 311 * p
     label = f"{n}周年まで あと {left}日 ・ {nxt:%Y.%m.%d} ・ 記録は続く ・ "
     tw = len(label) * 11.6
     px = 330 - (len(f"{pct}%") * 4.6 + 6)
-    svg = (f"<svg xmlns='http://www.w3.org/2000/svg' width='330' height='218'>{STYLE}"
-        "<defs><clipPath id='q'><rect x='48' y='124' width='278' height='28'/></clipPath></defs>"
+    svg = (f"<svg xmlns='http://www.w3.org/2000/svg' width='330' height='200'>{STYLE}"
+        "<defs><clipPath id='q'><rect x='48' y='114' width='278' height='28'/></clipPath></defs>"
         "<text y='8'>記録対象 — SUBJECT</text>"
         f"<text y='56' style='fill:#3A3E40'>SINCE {START:%Y.%m.%d}</text>"
         "<text x='330' y='8' text-anchor='end'>経過日数 · ELAPSED</text>"
@@ -70,52 +70,61 @@ def dday_svg(today):
         f"<text x='{px + 2:.0f}' y='60.3' style='fill:{INK}'>{pct}%</text>"
         f"<path d='M0 74H330' stroke='#8a8b8b'/><path d='M0 72H330' stroke='#999' stroke-width='3' stroke-dasharray='1 5'/>"
         f"<path d='M0 71H330' stroke='#999' stroke-width='5' stroke-dasharray='1 29'/>"
-        f"<rect y='84' width='330' height='27.5' fill='{INK}'/><rect y='87.5' width='163' height='24' fill='{BLUE}'/><rect x='167' y='87.5' width='163' height='24' fill='{BLUE}'/>"
-        "<text class='j' x='11' y='103.5'>◀ きのう</text><text class='j' x='319' y='103.5' text-anchor='end'>あした ▶</text>"
-        f"<rect y='124' width='330' height='28' rx='3' fill='{INK}'/><path d='M3 124h41v28H3a3 3 0 0 1-3-3v-22a3 3 0 0 1 3-3z' fill='{CREAM}'/>"
-        "<text class='j' x='22' y='136' text-anchor='middle' style='font-size:9px;letter-spacing:0'>次は</text>"
-        "<text class='j' x='22' y='147' text-anchor='middle' style='font-size:9px;letter-spacing:0'>NEXT</text>"
-        f"<g clip-path='url(#q)'><text class='j' x='330' y='142' style='fill:{CREAM};font-weight:700'>{label * 2}"
+        f"<rect y='80' width='330' height='27.5' fill='{INK}'/><rect y='83.5' width='163' height='24' fill='{BLUE}'/><rect x='167' y='83.5' width='163' height='24' fill='{BLUE}'/>"
+        "<text class='j' x='11' y='99.5'>◀ きのう</text><text class='j' x='319' y='99.5' text-anchor='end'>あした ▶</text>"
+        f"<rect y='114' width='330' height='28' rx='3' fill='{INK}'/><path d='M3 114h41v28H3a3 3 0 0 1-3-3v-22a3 3 0 0 1 3-3z' fill='{CREAM}'/>"
+        "<text class='j' x='22' y='126' text-anchor='middle' style='font-size:9px;letter-spacing:0'>次は</text>"
+        "<text class='j' x='22' y='137' text-anchor='middle' style='font-size:9px;letter-spacing:0'>NEXT</text>"
+        f"<g clip-path='url(#q)'><text class='j' x='330' y='132' style='fill:{CREAM};font-weight:700'>{label * 2}"
         f"<animateTransform attributeName='transform' type='translate' to='-{tw:.0f} 0' dur='{tw / 34:.0f}s' repeatCount='indefinite'/></text></g>"
         f"<path d='M9 {Y}H320' stroke='#DCDFE3' stroke-width='6'/><path d='M15 {Y}H{max(15, mx - 9):.0f}' stroke='{INK}' stroke-width='6'/>"
         f"<g fill='#fff' stroke='{INK}' stroke-width='3.2'><circle cx='9' cy='{Y}' r='6'/><circle cx='87' cy='{Y}' r='6'/><circle cx='165' cy='{Y}' r='6'/><circle cx='243' cy='{Y}' r='6'/>"
         f"<circle cx='320' cy='{Y}' r='8.5' stroke-width='2.6'/><circle cx='320' cy='{Y}' r='5' fill='{CREAM}' stroke-width='2'/></g>"
-        f"<circle cx='{mx:.0f}' cy='{Y}' r='20' fill-opacity='.05'/><rect x='{mx - 20:.0f}' y='164' width='40' height='15' fill='{INK}'/>"
-        f"<text class='j' x='{mx:.0f}' y='175' text-anchor='middle' style='font-size:9px;letter-spacing:0;fill:#fff'>現在地</text>"
+        f"<circle cx='{mx:.0f}' cy='{Y}' r='20' fill-opacity='.05'/><rect x='{mx - 20:.0f}' y='146' width='40' height='15' fill='{INK}'/>"
+        f"<text class='j' x='{mx:.0f}' y='157' text-anchor='middle' style='font-size:9px;letter-spacing:0;fill:#fff'>現在地</text>"
         f"<circle cx='{mx:.0f}' cy='{Y}' r='9' fill='{BLUE}' stroke='{INK}' stroke-width='4'/>"
-        f"<text class='v' y='216' style='font-size:8.5px;letter-spacing:1.6px'>START</text>"
-        f"<text class='v' x='330' y='216' text-anchor='end' style='font-size:8.5px;letter-spacing:1.6px'>{ordinal(n)}</text></svg>")
+        f"<text class='v' y='198' style='font-size:8.5px;letter-spacing:1.6px'>START</text>"
+        f"<text class='v' x='330' y='198' text-anchor='end' style='font-size:8.5px;letter-spacing:1.6px'>{ordinal(n)}</text></svg>")
     return svg, f"{num} · {n}周年まで{left}日 · {pct}%"
 
 
 def ticket_svg():
+    """Main part (238 wide) and tear-off stub (92 wide); the stub is torn off on hover via CSS."""
     dash = "1 1 2 1 1 2 3 1 1 1 2 2 1 1 3 2 1 1 2 1 1 2 2 1 3 1 1 2 1 1 2 1 1 3"
     t = lambda x, y, c, txt, extra="": f"<text{f" class='{c}'" if c != 'm' else ''} x='{x}' y='{y}'{extra}>{txt}</text>"
     e = " text-anchor='end'"
-    return (f"<svg xmlns='http://www.w3.org/2000/svg' width='330' height='204'>{STYLE}"
-        f"<rect width='330' height='24' fill='{INK}'/><circle cx='17.5' cy='12' r='4.7' fill='none' stroke='#fff' stroke-width='1.6'/><circle cx='17.5' cy='12' r='2' fill='#fff'/>"
-        + t(29, 15.5, "b", "SERAPIX", " style='font-size:10px;letter-spacing:1.8px;fill:#fff'")
+    notch = lambda x: f"<circle cx='{x}' r='9' fill='#F3F4F3'/><circle cx='{x}' cy='204' r='9' fill='#F3F4F3'/>"
+    main = (f"<svg xmlns='http://www.w3.org/2000/svg' width='238' height='204'>{STYLE}"
+        f"<rect width='238' height='24' fill='{INK}'/><circle cx='17.5' cy='12' r='4.7' fill='none' stroke='#fff' stroke-width='1.6'/><circle cx='17.5' cy='12' r='2' fill='#fff'/>"
+        + t(29, 15.5, "b", "SERAPHIX", " style='font-size:10px;letter-spacing:1.8px;fill:#fff'")
         + t(112, 14.5, "m", "BOARDING PASS · 搭乗券", " style='font-size:6px;fill:#A9AFB2'")
         + f"<rect y='78' width='238' height='3' fill='{YEL}'/>"
         + t(74, 91, "s", "PASSENGER")
         + t(12, 144, "b", "XEN") + t(226, 144, "b", "DINE", e)
-        + t(12, 152, "s", "SERAPIX") + t(226, 152, "s", "ARCHIVE B2", e)
+        + t(12, 152, "s", "SERAPHIX") + t(226, 152, "s", "ARCHIVE B2", e)
         + f"<path d='M64 137H180' stroke='#777' stroke-width='1.2' stroke-dasharray='3 2.5'/><rect x='113' y='128' width='14' height='16' fill='#FBFBFB'/>"
         + "<path transform='translate(128 129) rotate(90) scale(.6)' d='M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5z'/>"
         + "".join(t(x, 166, "s", a) + t(x, 177, "v", b)
                   for x, a, b in ((12, "FLIGHT", "VX-01"), (66, "GATE", "31F"), (120, "SEAT", "0808A"), (174, "DATE", "08AUG26")))
-        + "<path d='M238 30V194' stroke='#aaa' stroke-width='1.5' stroke-dasharray='4 3'/>"
-        + t(250, 40, "s", "BOARDING") + t(250, 53, "b", "XEN → DINE", " style='font-size:9.5px'")
-        + t(250, 66, "s", "SEAT") + t(250, 83, "b", "0808A", " style='font-size:17px'")
-        + t(250, 96, "s", "GATE") + t(250, 113, "b", "31F", " style='font-size:17px'")
-        + f"<path d='M250 170H318' stroke='{INK}' stroke-width='20' stroke-dasharray='{dash}'/>"
-        + t(250, 192, "s", "NO.0001 · XEN")
-        + "<circle cx='238' r='9' fill='#F3F4F3'/><circle cx='238' cy='204' r='9' fill='#F3F4F3'/></svg>")
+        + "<path d='M237 30V194' stroke='#aaa' stroke-width='1.5' stroke-dasharray='4 3'/>"
+        + notch(238) + "</svg>")
+    stub = (f"<svg xmlns='http://www.w3.org/2000/svg' width='92' height='204'>{STYLE}"
+        f"<rect width='92' height='24' fill='{INK}'/>"
+        + t(12, 40, "s", "BOARDING") + t(12, 53, "b", "XEN → DINE", " style='font-size:9.5px'")
+        + t(12, 66, "s", "SEAT") + t(12, 83, "b", "0808A", " style='font-size:17px'")
+        + t(12, 96, "s", "GATE") + t(12, 113, "b", "31F", " style='font-size:17px'")
+        + f"<path d='M12 170H80' stroke='{INK}' stroke-width='20' stroke-dasharray='{dash}'/>"
+        + t(12, 192, "s", "NO.0001 · XEN")
+        + "<path d='M0 30V194' stroke='#F3F4F3' stroke-width='3' stroke-dasharray='0 7' stroke-linecap='round'/>"
+        + notch(0) + "</svg>")
+    return main, stub
 
 
 if __name__ == "__main__":
     today = datetime.now(TZ).date()
     svg, info = dday_svg(today)
     open("dday.svg", "w", encoding="utf-8").write(svg)
-    open("ticket.svg", "w", encoding="utf-8").write(ticket_svg())
+    main, stub = ticket_svg()
+    open("ticket.svg", "w", encoding="utf-8").write(main)
+    open("stub.svg", "w", encoding="utf-8").write(stub)
     print(today, info)
