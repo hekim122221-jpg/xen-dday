@@ -117,32 +117,45 @@ def dday_svg(today):
 
 
 def ticket_svg():
-    """Main part (238 wide) and tear-off stub (92 wide); the stub is torn off on hover via CSS."""
+    """Design A "ARCHIVE PASS": light main part (238 wide) + inverse black stub (92 wide).
+    Photo, avatar, name, handle and share button are page elements placed over these by the CSS."""
     dash = "1 1 2 1 1 2 3 1 1 1 2 2 1 1 3 2 1 1 2 1 1 2 2 1 3 1 1 2 1 1 2 1 1 3"
     t = lambda x, y, c, txt, extra="": f"<text{f" class='{c}'" if c != 'm' else ''} x='{x}' y='{y}'{extra}>{txt}</text>"
     e = " text-anchor='end'"
     notch = lambda x: f"<circle cx='{x}' r='9' fill='#F3F4F3'/><circle cx='{x}' cy='204' r='9' fill='#F3F4F3'/>"
+    lab = " style='font-size:5px;letter-spacing:1.3px'"
+    plane = "M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5z"
+    slash = "".join(f"M{x} 17l3-10h2.2l-3 10z" for x in (207, 212.5, 218, 223.5))
     main = (f"<svg xmlns='http://www.w3.org/2000/svg' width='238' height='204'>{STYLE}"
+        f"<rect width='238' height='204' fill='#FCFCFB'/>"
         f"<rect width='238' height='24' fill='{INK}'/><circle cx='17.5' cy='12' r='4.7' fill='none' stroke='#fff' stroke-width='1.6'/><circle cx='17.5' cy='12' r='2' fill='#fff'/>"
         + t(29, 15.5, "b", "SERAPHIX", " textLength='66' style='font-size:10px;letter-spacing:1.8px;fill:#fff'")
-        + t(112, 14.5, "m", "BOARDING PASS · 搭乗券", " style='font-size:6px;fill:#A9AFB2'")
-        + f"<rect y='78' width='238' height='3' fill='{YEL}'/>"
-        + t(74, 91, "s", "PASSENGER")
-        + t(12, 144, "b", "XEN", " textLength='44'") + t(226, 144, "b", "DINE", e + " textLength='52'")
-        + t(12, 152, "s", "SERAPHIX") + t(226, 152, "s", "EXITUS", e)
-        + f"<path d='M64 137H166' stroke='#777' stroke-width='1.2' stroke-dasharray='3 2.5'/><rect x='108' y='128' width='14' height='16' fill='#FBFBFB'/>"
-        + "<path transform='translate(122.2 129) rotate(90) scale(.6)' d='M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5z'/>"
-        + "".join(t(x, 166, "s", a) + t(x, 177, "v", b)
-                  for x, a, b in ((12, "FLIGHT", "VX-01"), (66, "GATE", "31F"), (120, "SEAT", "0808A"), (174, "DATE", "08AUG26")))
-        + "<path d='M237 30V194' stroke='#aaa' stroke-width='1.5' stroke-dasharray='4 3'/>"
+        + t(104, 14.5, "m", "BOARDING PASS · 搭乗券", " textLength='92' style='font-size:5.5px;fill:#8F9497'")
+        + f"<path d='{slash}' fill='{YEL}'/>"
+        + f"<rect y='80' width='202' height='3' fill='{YEL}'/><rect x='202' y='80' width='36' height='3' fill='{INK}'/>"
+        + f"<rect x='18' y='111' width='40' height='9' fill='{INK}'/>"
+        + t(38, 117.3, "m", "ID·0808", " text-anchor='middle' style='font-size:4.5px;letter-spacing:1px;fill:#fff'")
+        + t(74, 91, "m", "PASSENGER · 乗客", lab)
+        + t(12, 146, "b", "XEN", " textLength='46' style='font-size:22px'") + t(226, 146, "b", "DINE", e + " textLength='54' style='font-size:22px'")
+        + t(12, 155, "m", "SERAPHIX", lab) + t(226, 155, "m", "EXITUS", e + lab)
+        + "<path d='M68 139.5H164' stroke='#14151673'/><path d='M68 141.5H164' stroke='#14151673' stroke-width='3' stroke-dasharray='1 5'/>"
+        + f"<circle cx='116' cy='139' r='9' fill='{INK}'/><path transform='translate(122 133.2) rotate(90) scale(.5)' d='{plane}' fill='{YEL}'/>"
+        + "<path d='M66 162V182M120 162V182M174 162V182' stroke='#14151624'/>"
+        + "".join(t(x, 169, "m", a, lab) + t(x, 180, "v", b)
+                  for x, a, b in ((12, "FLIGHT", "VX-01"), (73, "GATE", "31F"), (127, "SEAT", "0808A"), (181, "DATE", "08AUG26")))
+        + t(12, 198, "m", "LINK ARCHIVE — ACCESS PASS · 記録保管所", " style='font-size:4.5px;letter-spacing:1.1px;fill:#8F9497'")
+        + f"<rect x='212' y='193' width='4' height='4' fill='{INK}'/><rect x='217' y='193' width='4' height='4' fill='{YEL}'/><rect x='222' y='195' width='4' height='4' fill='#8F9497'/>"
+        + "<path d='M237 30V190' stroke='#14151650' stroke-width='1.5' stroke-dasharray='4 3'/>"
         + notch(238) + "</svg>")
+    g = " style='fill:#8F9497;font-size:5px;letter-spacing:1.3px'"
     stub = (f"<svg xmlns='http://www.w3.org/2000/svg' width='92' height='204'>{STYLE}"
-        f"<rect width='92' height='24' fill='{INK}'/>"
-        + t(12, 40, "s", "BOARDING") + t(12, 53, "b", "XEN → DINE", " style='font-size:9.5px'")
-        + t(12, 66, "s", "SEAT") + t(12, 83, "b", "0808A", " style='font-size:17px'")
-        + t(12, 96, "s", "GATE") + t(12, 113, "b", "31F", " style='font-size:17px'")
-        + f"<path d='M12 170H80' stroke='{INK}' stroke-width='20' stroke-dasharray='{dash}'/>"
-        + t(12, 192, "s", "NO.0001 · XEN")
+        f"<rect width='92' height='204' fill='{INK}'/><path d='M0 24.5H92' stroke='#ffffff1f'/>"
+        + t(12, 40, "m", "BOARDING", g) + t(12, 53, "b", "XEN → DINE", " style='font-size:9.5px;fill:#fff'")
+        + t(12, 68, "m", "SEAT", g) + t(12, 85, "b", "0808A", " textLength='58' style='font-size:18px;fill:#fff'")
+        + t(12, 100, "m", "GATE", g) + t(12, 117, "b", "31F", f" style='font-size:18px;fill:{YEL}'")
+        + "<text transform='translate(84 40) rotate(90)' style='font-size:4.5px;letter-spacing:1.8px;fill:#5E6366'>PASS · 搭乗券</text>"
+        + f"<path d='M12 169H80' stroke='#fff' stroke-width='18' stroke-dasharray='{dash}'/>"
+        + t(12, 194, "m", "NO.0001 · XEN", g)
         + "<path d='M0 30V194' stroke='#F3F4F3' stroke-width='3' stroke-dasharray='0 7' stroke-linecap='round'/>"
         + notch(0) + "</svg>")
     return main, stub
