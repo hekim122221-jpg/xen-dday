@@ -62,24 +62,22 @@ def dday_svg(today):
     E = "calcMode='spline' keyTimes='0;1' keySplines='.16 1 .3 1'"
     def at(x):
         return f"{B + x:.2f}s"
+    # The entry motion now lives in the page CSS (a mask wipe per row), because an SVG
+    # background's own timeline can start before the page is shown (or be reused from cache).
     def rise(body, x, dy=8):
-        return (f"<g opacity='0'><animate attributeName='opacity' to='1' begin='{at(x)}' dur='.5s' fill='freeze'/>"
-                f"<animateTransform attributeName='transform' type='translate' from='0 {dy}' to='0 0' begin='{at(x)}' dur='.9s' fill='freeze' {E}/>{body}</g>")
+        return body
     def grow(attrs, w, x, d=.7, x0=None, x1=None):
-        mv = (f"<animate attributeName='x' from='{x0}' to='{x1}' begin='{at(x)}' dur='{d}s' fill='freeze' {E}/>" if x0 is not None else "")
-        return (f"<rect {attrs} width='0'{f' x={chr(39)}{x0}{chr(39)}' if x0 is not None else ''}>"
-                f"<animate attributeName='width' to='{w}' begin='{at(x)}' dur='{d}s' fill='freeze' {E}/>{mv}</rect>")
+        return f"<rect {attrs} width='{w}'{f' x={chr(39)}{x1}{chr(39)}' if x1 is not None else ''}/>"
     def pop(cx, r, x, extra=""):
-        return (f"<circle cx='{cx}' cy='{Y}' r='0'{extra}><animate attributeName='r' values='0;{r * 1.25:.1f};{r}' keyTimes='0;.6;1' "
-                f"begin='{at(x)}' dur='.45s' fill='freeze'/></circle>")
+        return f"<circle cx='{cx}' cy='{Y}' r='{r}'{extra}/>"
     def ripple(b):
         return (f"<circle cx='{mx:.0f}' cy='{Y}' r='9' fill-opacity='0'><animate attributeName='r' values='9;20' keyTimes='0;1' calcMode='spline' "
-                f"keySplines='.2 .7 .3 1' dur='3.6s' begin='{at(b)}' repeatCount='indefinite'/><animate attributeName='fill-opacity' values='.13;0' "
-                f"dur='3.6s' begin='{at(b)}' repeatCount='indefinite'/></circle>")
+                f"keySplines='.2 .7 .3 1' dur='3.6s' begin='{b - 1.9:.1f}s' repeatCount='indefinite'/><animate attributeName='fill-opacity' values='.13;0' "
+                f"dur='3.6s' begin='{b - 1.9:.1f}s' repeatCount='indefinite'/></circle>")
     svg = (f"<svg xmlns='http://www.w3.org/2000/svg' width='330' height='200'>{STYLE}"
         "<defs><clipPath id='q'><rect x='48' y='114' width='278' height='28'/></clipPath>"
-        f"<clipPath id='r'><rect y='60' height='20' width='0'><animate attributeName='width' to='330' begin='{at(.15)}' dur='1s' fill='freeze' {E}/></rect></clipPath>"
-        f"<clipPath id='t'><rect y='160' height='40' width='0'><animate attributeName='width' to='330' begin='{at(.8)}' dur='.9s' fill='freeze' {E}/></rect></clipPath></defs>"
+        "<clipPath id='r'><rect y='60' height='20' width='330'/></clipPath>"
+        "<clipPath id='t'><rect y='160' height='40' width='330'/></clipPath></defs>"
         + rise("<text y='8'>記録対象 — SUBJECT</text>"
                f"<text class='j' y='42' style='font-size:26px;font-weight:900;letter-spacing:0'>{esc(NAME)}</text>"
                f"<text y='56' style='fill:#3A3E40'>SINCE {START:%Y.%m.%d}</text>", 0)
@@ -101,7 +99,7 @@ def dday_svg(today):
                "<text class='j' x='22' y='126' text-anchor='middle' style='font-size:9px;letter-spacing:0'>次は</text>"
                "<text class='j' x='22' y='137' text-anchor='middle' style='font-size:9px;letter-spacing:0'>NEXT</text>", .85, 6)
         + f"<g clip-path='url(#q)'><text class='j' x='326' y='132' textLength='{tw}' style='fill:{CREAM};font-weight:700'>{label.rstrip(' ・')}"
-          f"<animateTransform attributeName='transform' type='translate' from='0 0' to='-{tw + 278} 0' dur='{(tw + 278) / 36:.2f}s' begin='{at(1.1)}' repeatCount='indefinite'/></text></g>"
+          f"<animateTransform attributeName='transform' type='translate' from='0 0' to='-{tw + 278} 0' dur='{(tw + 278) / 36:.2f}s' repeatCount='indefinite'/></text></g>"
         + f"<g clip-path='url(#t)'><path d='M9 {Y}H320' stroke='#DCDFE3' stroke-width='6'/><path d='M15 {Y}H{max(15, mx - 9):.0f}' stroke='{INK}' stroke-width='6'/></g>"
         + f"<g fill='#fff' stroke='{INK}' stroke-width='3.2'>"
         + "".join(pop(cx, 6, .9 + k * .09) for k, cx in enumerate((9, 87, 165, 243)))
