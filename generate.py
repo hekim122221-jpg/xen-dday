@@ -101,7 +101,7 @@ def ticket_svg():
         + f"<rect y='78' width='238' height='3' fill='{YEL}'/>"
         + t(74, 91, "s", "PASSENGER")
         + t(12, 144, "b", "XEN", " textLength='44'") + t(226, 144, "b", "DINE", e + " textLength='52'")
-        + t(12, 152, "s", "SERAPHIX") + t(226, 152, "s", "ARCHIVE B2", e)
+        + t(12, 152, "s", "SERAPHIX") + t(226, 152, "s", "EXITUS", e)
         + f"<path d='M64 137H166' stroke='#777' stroke-width='1.2' stroke-dasharray='3 2.5'/><rect x='108' y='128' width='14' height='16' fill='#FBFBFB'/>"
         + "<path transform='translate(122.2 129) rotate(90) scale(.6)' d='M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5z'/>"
         + "".join(t(x, 166, "s", a) + t(x, 177, "v", b)
