@@ -159,6 +159,72 @@ def ticket_svg():
     return main, stub
 
 
+def calendar_svg(today):
+    """Month calendar popup (hover on きのう). Regenerated hourly, Asia/Seoul date."""
+    import calendar
+    W, H = 210, 214
+    JPM = "一二三四五六七八九十"
+    jm = ("十" + JPM[today.month - 11] if today.month > 10 else JPM[today.month - 1]) + "月"
+    first_wd = (date(today.year, today.month, 1).weekday() + 1) % 7   # 0 = Sunday
+    days = calendar.monthrange(today.year, today.month)[1]
+    out = [f"<svg xmlns='http://www.w3.org/2000/svg' width='{W}' height='{H}'>{STYLE}",
+           f"<rect x='.5' y='.5' width='{W - 1}' height='{H - 1}' rx='6' fill='#FCFCFB' stroke='#14151633'/>",
+           f"<path d='M6 .5h{W - 12}a5.5 5.5 0 0 1 5.5 5.5V24H.5V6A5.5 5.5 0 0 1 6 .5z' fill='{INK}'/>",
+           "<text x='12' y='15' style='font-size:5.5px;letter-spacing:1.6px;fill:#8F9497'>◇ CALENDAR · 暦</text>",
+           f"<text x='{W - 12}' y='15' text-anchor='end' style='font-size:5.5px;letter-spacing:1.6px;fill:#8F9497'>KST</text>",
+           f"<rect x='{W - 40}' y='9' width='8' height='8' fill='{YEL}'/>",
+           f"<text class='b' x='12' y='60' style='font-size:30px'>{today.month:02d}</text>",
+           f"<text x='60' y='47' style='font-size:7px;letter-spacing:1.6px;fill:{INK}'>{today.strftime('%B').upper()}</text>",
+           f"<text x='60' y='58' style='font-size:6px;letter-spacing:1.4px'>{today.year} · {jm}</text>",
+           f"<path d='M12 68H{W - 12}' stroke='{INK}'/>"]
+    cw, ch, x0, y0 = 26.6, 19, 12, 90
+    for i, wd in enumerate("日月火水木金土"):
+        out.append(f"<text class='j' x='{x0 + cw * i + cw / 2:.1f}' y='81' text-anchor='middle' style='font-size:6px;letter-spacing:0;fill:{'#8F9497' if i == 0 else INK}'>{wd}</text>")
+    for dnum in range(1, days + 1):
+        k = first_wd + dnum - 1
+        cx, cy = x0 + cw * (k % 7) + cw / 2, y0 + ch * (k // 7) + 12
+        d = date(today.year, today.month, dnum)
+        if d == today:
+            out.append(f"<rect x='{cx - 10:.1f}' y='{cy - 9.5:.1f}' width='20' height='14' fill='{YEL}'/><rect x='{cx - 10:.1f}' y='{cy + 4.5:.1f}' width='20' height='1.5' fill='{INK}'/>")
+            fill = INK
+        elif d < today:
+            fill = "#A9AFB2"
+        else:
+            fill = "#8F9497" if k % 7 == 0 else INK
+        out.append(f"<text class='v' x='{cx:.1f}' y='{cy:.1f}' text-anchor='middle' style='font-size:8px;fill:{fill}'>{dnum}</text>")
+        if d == START or (d.month == START.month and d.day == START.day and d > START):
+            out.append(f"<circle cx='{cx + 8:.1f}' cy='{cy - 8:.1f}' r='1.6' fill='{BLUE}' stroke='{INK}' stroke-width='.6'/>")
+    dnum_today = (today - START).days + 1
+    out += [f"<path d='M12 {H - 22}H{W - 12}' stroke='#14151624'/>",
+            f"<text x='12' y='{H - 11}' style='font-size:5.5px;letter-spacing:1.4px'>TODAY {today:%m.%d} {today.strftime('%a').upper()}</text>",
+            f"<text x='{W - 12}' y='{H - 11}' text-anchor='end' style='font-size:5.5px;letter-spacing:1.4px;fill:{INK}'>D+{dnum_today} · 記録中</text>",
+            "</svg>"]
+    return "".join(out)
+
+
+def clock_svg(now):
+    """Current-hour popup (hover on あした). GitHub regenerates it hourly, so it shows the hour, not minutes."""
+    W, H = 210, 128
+    h = now.hour
+    out = [f"<svg xmlns='http://www.w3.org/2000/svg' width='{W}' height='{H}'>{STYLE}",
+           f"<rect width='{W}' height='{H}' rx='6' fill='{INK}'/>",
+           "<text x='12' y='17' style='font-size:5.5px;letter-spacing:1.6px;fill:#8F9497'>◷ 現在時刻 · NOW</text>",
+           f"<text x='{W - 12}' y='17' text-anchor='end' style='font-size:5.5px;letter-spacing:1.6px;fill:#8F9497'>KST · UTC+9</text>",
+           "<path d='M12 24.5H198' stroke='#ffffff1f'/>",
+           f"<text class='b' x='10' y='70' style='font-size:44px;fill:#fff'>{h:02d}</text>",
+           f"<text class='j' x='70' y='70' style='font-size:14px;letter-spacing:1px;fill:{YEL}'>時台</text>",
+           f"<text x='{W - 12}' y='48' text-anchor='end' style='font-size:7px;letter-spacing:1.4px;fill:#A9AFB2'>{h:02d}:00 — {h:02d}:59</text>",
+           f"<text x='{W - 12}' y='62' text-anchor='end' style='font-size:7px;letter-spacing:1.4px;fill:#fff'>{now:%Y.%m.%d} · {now:%a}</text>".replace(now.strftime('%a'), now.strftime('%a').upper())]
+    sw = 186 / 24
+    for i in range(24):
+        fill = YEL if i == h else ("#5E6366" if i < h else "#2B2E30")
+        out.append(f"<rect x='{12 + sw * i:.2f}' y='86' width='{sw - 1.5:.2f}' height='{12 if i == h else 8}' fill='{fill}'/>")
+    for i in (0, 6, 12, 18, 24):
+        out.append(f"<text x='{12 + sw * i:.1f}' y='108' text-anchor='{'start' if i == 0 else ('end' if i == 24 else 'middle')}' style='font-size:5px;letter-spacing:1px;fill:#8F9497'>{i:02d}</text>")
+    out += [f"<text x='12' y='{H - 8}' style='font-size:4.5px;letter-spacing:1.4px;fill:#5E6366'>HOURLY SYNC — 1時間ごとに更新</text>", "</svg>"]
+    return "".join(out)
+
+
 if __name__ == "__main__":
     today = datetime.now(TZ).date()
     svg, info = dday_svg(today)
@@ -166,4 +232,7 @@ if __name__ == "__main__":
     main, stub = ticket_svg()
     open("ticket.svg", "w", encoding="utf-8").write(main)
     open("stub.svg", "w", encoding="utf-8").write(stub)
-    print(today, info)
+    now = datetime.now(TZ)
+    open("calendar.svg", "w", encoding="utf-8").write(calendar_svg(today))
+    open("clock.svg", "w", encoding="utf-8").write(clock_svg(now))
+    print(today, info, f"{now:%H}時台")
