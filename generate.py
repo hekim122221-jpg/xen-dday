@@ -115,43 +115,66 @@ def dday_svg(today):
 
 
 def ticket_svg():
-    """Design A "ARCHIVE PASS": light main part (238 wide) + inverse black stub (92 wide).
+    """Design Q+ "RESERVED": light main part (238 wide) with train formation + seat map, black stub (92 wide).
     Photo, avatar, name, handle and share button are page elements placed over these by the CSS."""
     dash = "1 1 2 1 1 2 3 1 1 1 2 2 1 1 3 2 1 1 2 1 1 2 2 1 3 1 1 2 1 1 2 1 1 3"
     t = lambda x, y, c, txt, extra="": f"<text{f" class='{c}'" if c != 'm' else ''} x='{x}' y='{y}'{extra}>{txt}</text>"
     e = " text-anchor='end'"
     notch = lambda x: f"<circle cx='{x}' r='9' fill='#F3F4F3'/><circle cx='{x}' cy='204' r='9' fill='#F3F4F3'/>"
-    lab = " style='font-size:5px;letter-spacing:1.3px'"
-    plane = "M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5z"
-    slash = "".join(f"M{x} 17l3-10h2.2l-3 10z" for x in (207, 212.5, 218, 223.5))
+    lab = " style='font-size:5.5px;letter-spacing:1.3px'"
+    G = "#E6E8E8"
+    # formation: 8 cars, car 8 highlighted
+    cw = (214 - 7 * 3) / 8
+    cars = ""
+    for k in range(8):
+        x = 12 + k * (cw + 3)
+        last = k == 7
+        cars += f"<rect x='{x:.2f}' y='131' width='{cw:.2f}' height='15' rx='{6 if k in (0, 7) else 2}' fill='{INK if last else G}'/>"
+        if k == 0:
+            cars += f"<rect x='{x + 8:.2f}' y='131' width='{cw - 8:.2f}' height='15' rx='2' fill='{G}'/>"
+        if last:
+            cars += f"<rect x='{x:.2f}' y='131' width='{cw - 8:.2f}' height='15' rx='2' fill='{INK}'/>"
+        cars += t(f"{x + cw / 2:.2f}", 141.5 if not last else 142, "b", str(k + 1), f" text-anchor='middle' style='font-size:{8 if last else 6.5}px;fill:{YEL if last else '#8F9497'}'")
+    # seat map of car 8: rows A/B x 12 seats, seat A-08 highlighted
+    sx0, sw = 48, (222 - 48 - 11 * 2) / 12
+    seats = ""
+    for r, y in (("A", 159.5), ("B", 172.5)):
+        for k in range(12):
+            x = sx0 + k * (sw + 2)
+            hit = r == "A" and k == 7
+            seats += f"<rect x='{x:.2f}' y='{y}' width='{sw:.2f}' height='11' rx='1.5' fill='{YEL if hit else G}'{' stroke=' + chr(39) + INK + chr(39) + ' stroke-width=' + chr(39) + '1.2' + chr(39) if hit else ''}/>"
+            if hit:
+                seats += t(f"{x + sw / 2:.2f}", y + 7.6, "b", "08", " text-anchor='middle' style='font-size:4.5px'")
     main = (f"<svg xmlns='http://www.w3.org/2000/svg' width='238' height='204'>{STYLE}"
         f"<rect width='238' height='204' fill='#FCFCFB'/>"
         f"<rect width='238' height='24' fill='{INK}'/><circle cx='17.5' cy='12' r='4.7' fill='none' stroke='#fff' stroke-width='1.6'/><circle cx='17.5' cy='12' r='2' fill='#fff'/>"
         + t(29, 15.5, "b", "SERAPHIX", " textLength='66' style='font-size:10px;letter-spacing:1.8px;fill:#fff'")
-        + t(104, 14.5, "m", "BOARDING PASS · 搭乗券", " textLength='92' style='font-size:5.5px;fill:#8F9497'")
-        + f"<path d='{slash}' fill='{YEL}'/>"
-        + f"<rect y='80' width='202' height='3' fill='{YEL}'/><rect x='202' y='80' width='36' height='3' fill='{INK}'/>"
-        + f"<rect x='18' y='111' width='40' height='9' fill='{INK}'/>"
-        + t(38, 117.3, "m", "ID·0808", " text-anchor='middle' style='font-size:4.5px;letter-spacing:1px;fill:#fff'")
-        + t(74, 91, "m", "PASSENGER · 乗客", lab)
-        + t(12, 146, "b", "XEN", " textLength='46' style='font-size:22px'") + t(226, 146, "b", "DINE", e + " textLength='54' style='font-size:22px'")
-        + t(12, 155, "m", "SERAPHIX", lab) + t(226, 155, "m", "EXITUS", e + lab)
-        + "<path d='M68 139.5H164' stroke='#14151673'/><path d='M68 141.5H164' stroke='#14151673' stroke-width='3' stroke-dasharray='1 5'/>"
-        + f"<circle cx='116' cy='139' r='9' fill='{INK}'/><path transform='translate(122 133.2) rotate(90) scale(.5)' d='{plane}' fill='{YEL}'/>"
-        + "<path d='M66 162V182M120 162V182M174 162V182' stroke='#14151624'/>"
-        + "".join(t(x, 169, "m", a, lab) + t(x, 180, "v", b)
-                  for x, a, b in ((12, "FLIGHT", "VX-01"), (73, "GATE", "31F"), (127, "SEAT", "0808A"), (181, "DATE", "08AUG26")))
-        + t(12, 198, "m", "LINK ARCHIVE — ACCESS PASS · 記録保管所", " style='font-size:4.5px;letter-spacing:1.1px;fill:#8F9497'")
-        + f"<rect x='212' y='193' width='4' height='4' fill='{INK}'/><rect x='217' y='193' width='4' height='4' fill='{YEL}'/><rect x='222' y='195' width='4' height='4' fill='#8F9497'/>"
+        + f"<rect x='148' y='6.5' width='31' height='11' fill='{BLUE}'/>"
+        + t(163.5, 14.6, "j", "指定席", " text-anchor='middle' style='font-size:6.5px;font-weight:900;letter-spacing:1.2px'")
+        + t(184, 14.5, "m", "RESERVED", " textLength='42' style='font-size:5.5px;fill:#A9AFB2'")
+        + f"<rect y='80' width='238' height='3' fill='{YEL}'/>"
+        + t(74, 92, "m", "PASSENGER · 乗客", lab)
+        + t(12, 126, "b", "XEN", " textLength='28' style='font-size:13px'") + t(43, 126, "m", "発", lab)
+        + t(119, 125, "m", "◀ 進行方向 ▶", " text-anchor='middle' style='font-size:5.5px;letter-spacing:1px'")
+        + t(190, 126, "m", "着", e + lab) + t(226, 126, "b", "DINE", e + " textLength='34' style='font-size:13px'")
+        + cars
+        + f"<rect x='12.6' y='156.6' width='212.8' height='28.8' rx='4' fill='#fff' stroke='{INK}' stroke-width='1.2'/>"
+        + f"<path d='M16.6 156.6H34V185.4H16.6a4 4 0 0 1-4-4V160.6a4 4 0 0 1 4-4z' fill='{INK}'/>"
+        + t(23.3, 172, "b", "8", f" text-anchor='middle' style='font-size:9px;fill:{YEL}'")
+        + t(23.3, 180.5, "j", "号車", " text-anchor='middle' style='font-size:4.5px;font-weight:700;letter-spacing:0;fill:#fff'")
+        + t(40, 167.5, "b", "A", " style='font-size:5px'") + t(40, 180.5, "b", "B", " style='font-size:5px;fill:#8F9497'")
+        + seats
+        + t(12, 198, "m", "A席 = 窓側 WINDOW", " style='font-size:5.5px;letter-spacing:1px'")
+        + t(226, 198, "m", "列車 <tspan style='fill:#111;font-weight:600'>VX-01 · 26.08.08</tspan>", e + " style='font-size:5.5px;letter-spacing:1px'")
         + "<path d='M237 30V190' stroke='#14151650' stroke-width='1.5' stroke-dasharray='4 3'/>"
         + notch(238) + "</svg>")
     g = " style='fill:#8F9497;font-size:5px;letter-spacing:1.3px'"
     stub = (f"<svg xmlns='http://www.w3.org/2000/svg' width='92' height='204'>{STYLE}"
         f"<rect width='92' height='204' fill='{INK}'/><path d='M0 24.5H92' stroke='#ffffff1f'/>"
-        + t(12, 40, "m", "BOARDING", g) + t(12, 53, "b", "XEN → DINE", " style='font-size:9.5px;fill:#fff'")
-        + t(12, 68, "m", "SEAT", g) + t(12, 85, "b", "0808A", " textLength='58' style='font-size:18px;fill:#fff'")
-        + t(12, 100, "m", "GATE", g) + t(12, 117, "b", "31F", f" style='font-size:18px;fill:{YEL}'")
-        + "<text transform='translate(84 40) rotate(90)' style='font-size:4.5px;letter-spacing:1.8px;fill:#5E6366'>PASS · 搭乗券</text>"
+        + t(12, 40, "m", "発車 · DEPARTS", g)
+        + t(12, 62, "b", "08:08", f" textLength='62' style='font-size:22px;fill:{YEL}'")
+        + t(12, 77, "m", "番線 TRACK", g) + t(12, 93, "b", "31F", " style='font-size:16px;fill:#fff'")
+        + t(12, 106, "m", "号車 CAR", g) + t(12, 120, "b", "8A", " style='font-size:13px;fill:#fff'")
         + f"<path d='M12 169H80' stroke='#fff' stroke-width='18' stroke-dasharray='{dash}'/>"
         + t(12, 194, "m", "NO.0001 · XEN", g)
         + "<path d='M0 30V194' stroke='#F3F4F3' stroke-width='3' stroke-dasharray='0 7' stroke-linecap='round'/>"
