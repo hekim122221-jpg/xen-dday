@@ -80,7 +80,7 @@ def dday_svg(today):
         f"<path d='M9 {Y}H320' stroke='#DCDFE3' stroke-width='6'/><path d='M15 {Y}H{max(15, mx - 9):.0f}' stroke='{INK}' stroke-width='6'/>"
         f"<g fill='#fff' stroke='{INK}' stroke-width='3.2'><circle cx='9' cy='{Y}' r='6'/><circle cx='87' cy='{Y}' r='6'/><circle cx='165' cy='{Y}' r='6'/><circle cx='243' cy='{Y}' r='6'/>"
         f"<circle cx='320' cy='{Y}' r='8.5' stroke-width='2.6'/><circle cx='320' cy='{Y}' r='5' fill='{CREAM}' stroke-width='2'/></g>"
-        f"<circle cx='{mx:.0f}' cy='{Y}' r='20' fill-opacity='.05'/><rect x='{mx - 20:.0f}' y='146' width='40' height='15' fill='{INK}'/>"
+        f"<circle cx='{mx:.0f}' cy='{Y}' r='20' fill-opacity='0'><animate attributeName='fill-opacity' values='0;.1;0' dur='3.2s' repeatCount='indefinite'/></circle><rect x='{mx - 20:.0f}' y='146' width='40' height='15' fill='{INK}'/>"
         f"<text class='j' x='{mx:.0f}' y='157' text-anchor='middle' style='font-size:9px;letter-spacing:0;fill:#fff'>現在地</text>"
         f"<circle cx='{mx:.0f}' cy='{Y}' r='9' fill='{BLUE}' stroke='{INK}' stroke-width='4'/>"
         f"<text class='v' y='198' style='font-size:8.5px;letter-spacing:1.6px'>START</text>"
@@ -96,14 +96,14 @@ def ticket_svg():
     notch = lambda x: f"<circle cx='{x}' r='9' fill='#F3F4F3'/><circle cx='{x}' cy='204' r='9' fill='#F3F4F3'/>"
     main = (f"<svg xmlns='http://www.w3.org/2000/svg' width='238' height='204'>{STYLE}"
         f"<rect width='238' height='24' fill='{INK}'/><circle cx='17.5' cy='12' r='4.7' fill='none' stroke='#fff' stroke-width='1.6'/><circle cx='17.5' cy='12' r='2' fill='#fff'/>"
-        + t(29, 15.5, "b", "SERAPHIX", " style='font-size:10px;letter-spacing:1.8px;fill:#fff'")
+        + t(29, 15.5, "b", "SERAPHIX", " textLength='66' style='font-size:10px;letter-spacing:1.8px;fill:#fff'")
         + t(112, 14.5, "m", "BOARDING PASS · 搭乗券", " style='font-size:6px;fill:#A9AFB2'")
         + f"<rect y='78' width='238' height='3' fill='{YEL}'/>"
         + t(74, 91, "s", "PASSENGER")
-        + t(12, 144, "b", "XEN") + t(226, 144, "b", "DINE", e)
+        + t(12, 144, "b", "XEN", " textLength='44'") + t(226, 144, "b", "DINE", e + " textLength='52'")
         + t(12, 152, "s", "SERAPHIX") + t(226, 152, "s", "ARCHIVE B2", e)
-        + f"<path d='M64 137H180' stroke='#777' stroke-width='1.2' stroke-dasharray='3 2.5'/><rect x='113' y='128' width='14' height='16' fill='#FBFBFB'/>"
-        + "<path transform='translate(128 129) rotate(90) scale(.6)' d='M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5z'/>"
+        + f"<path d='M64 137H166' stroke='#777' stroke-width='1.2' stroke-dasharray='3 2.5'/><rect x='108' y='128' width='14' height='16' fill='#FBFBFB'/>"
+        + "<path transform='translate(122.2 129) rotate(90) scale(.6)' d='M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5z'/>"
         + "".join(t(x, 166, "s", a) + t(x, 177, "v", b)
                   for x, a, b in ((12, "FLIGHT", "VX-01"), (66, "GATE", "31F"), (120, "SEAT", "0808A"), (174, "DATE", "08AUG26")))
         + "<path d='M237 30V194' stroke='#aaa' stroke-width='1.5' stroke-dasharray='4 3'/>"
