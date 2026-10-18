@@ -55,7 +55,7 @@ def dday_svg(today):
     Y = 178
     mx = 9 + 311 * p
     label = f"{n}周年まで あと {left}日 ・ {nxt:%Y.%m.%d} ・ 記録は続く ・ "
-    tw = round(len(label) * 11.6)
+    tw = round(len(label.rstrip(' ・')) * 11.6)
     px = 330 - (len(f"{pct}%") * 4.6 + 6)
     svg = (f"<svg xmlns='http://www.w3.org/2000/svg' width='330' height='200'>{STYLE}"
         "<defs><clipPath id='q'><rect x='48' y='114' width='278' height='28'/></clipPath></defs>"
@@ -75,8 +75,8 @@ def dday_svg(today):
         f"<rect y='114' width='330' height='28' rx='3' fill='{INK}'/><path d='M3 114h41v28H3a3 3 0 0 1-3-3v-22a3 3 0 0 1 3-3z' fill='{CREAM}'/>"
         "<text class='j' x='22' y='126' text-anchor='middle' style='font-size:9px;letter-spacing:0'>次は</text>"
         "<text class='j' x='22' y='137' text-anchor='middle' style='font-size:9px;letter-spacing:0'>NEXT</text>"
-        f"<g clip-path='url(#q)'><text class='j' x='48' y='132' textLength='{3 * tw}' style='fill:{CREAM};font-weight:700'>{label * 3}"
-        f"<animateTransform attributeName='transform' type='translate' from='0 0' to='-{tw} 0' dur='{tw / 34:.2f}s' repeatCount='indefinite'/></text></g>"
+        f"<g clip-path='url(#q)'><text class='j' x='326' y='132' textLength='{tw}' style='fill:{CREAM};font-weight:700'>{label.rstrip(' ・')}"
+        f"<animateTransform attributeName='transform' type='translate' from='0 0' to='-{tw + 278} 0' dur='{(tw + 278) / 36:.2f}s' repeatCount='indefinite'/></text></g>"
         f"<path d='M9 {Y}H320' stroke='#DCDFE3' stroke-width='6'/><path d='M15 {Y}H{max(15, mx - 9):.0f}' stroke='{INK}' stroke-width='6'/>"
         f"<g fill='#fff' stroke='{INK}' stroke-width='3.2'><circle cx='9' cy='{Y}' r='6'/><circle cx='87' cy='{Y}' r='6'/><circle cx='165' cy='{Y}' r='6'/><circle cx='243' cy='{Y}' r='6'/>"
         f"<circle cx='320' cy='{Y}' r='8.5' stroke-width='2.6'/><circle cx='320' cy='{Y}' r='5' fill='{CREAM}' stroke-width='2'/></g>"
