@@ -1,5 +1,6 @@
 """XEN · luvlinks widgets.
 Writes:
+  dday_w.svg – WHITE LAB record panel (updates daily)
   dday.svg   – D-DAY widget (updates daily, Asia/Seoul date)
   ticket.svg – boarding-pass background for the ID card (static)
 Run by .github/workflows/dday.yml every hour; only commits when the files change."""
@@ -91,6 +92,51 @@ def dday_svg(today):
         + f"<text class='v' y='205' style='font-size:7.5px;letter-spacing:1.4px'>START</text>"
         + f"<text class='v' x='330' y='205' text-anchor='end' style='font-size:7.5px;letter-spacing:1.4px'>{ordinal(n)}</text></svg>")
     return svg, f"{num} · {n}周年まで{left}日 · {pct}%"
+
+
+def dday_w_svg(today):
+    """WHITE LAB record panel (142 x 98) — content only; the glass panel itself is drawn by the page CSS."""
+    dnum = (today - START).days + 1
+    n = 1
+    while anniv(n) <= today:
+        n += 1
+    prev, nxt = anniv(n - 1), anniv(n)
+    cycle = (nxt - prev).days
+    dayi = (today - prev).days + 1 if today >= START else 0
+    left = (nxt - today).days
+    p = max(0.0, min(1.0, dayi / cycle))
+    pct = round(p * 100)
+    sign, num = ("D+", dnum) if dnum > 0 else ("D-", 1 - dnum)
+    K, M, Yd = "#2B333B", "#8A939B", "#EDCC55"
+    MO = "font-family:ui-monospace,Menlo,Consolas,monospace"
+    SA = "font-family:Pretendard,&apos;Helvetica Neue&apos;,Arial,sans-serif"
+    JJ = "font-family:" + JP.replace("'", "&apos;")
+    tx, ty, tw = 10, 68, 122
+    mx = tx + tw * p
+    msg = esc(f"※ {n}周年まで あと {left}日 · {nxt:%Y.%m.%d} · 記録は続く")
+    mw = round(len(msg) * 5.2)
+    o = [f"<svg xmlns='http://www.w3.org/2000/svg' width='284' height='196' viewBox='0 0 142 98'>",
+         "<defs><linearGradient id='pl' x1='0' x2='1'><stop offset='0' stop-color='#E3F1FA'/><stop offset='1' stop-color='#FBF3D2'/></linearGradient>",
+         "<linearGradient id='pr' x1='0' x2='1'><stop offset='0' stop-color='#C8E6F7'/><stop offset='1' stop-color='#8CC6EC'/></linearGradient>",
+         f"<clipPath id='mq'><rect x='{tx}' y='82' width='{tw}' height='10'/></clipPath></defs>",
+         f"<text x='10' y='14.5' style='{MO};font-size:5.2px;font-weight:700;letter-spacing:.6px;fill:{M}'>◇ RECORD · 記録</text>",
+         f"<rect x='98' y='7' width='34' height='11' rx='5.5' fill='url(#pl)'/>",
+         f"<text x='115' y='14.6' text-anchor='middle' style='{JJ};font-size:5.6px;font-weight:700;fill:{K}'>{NAME}</text>",
+         f"<text x='9' y='47' style='{SA};font-size:30px;letter-spacing:-1.2px;fill:{K}'><tspan style='font-weight:200'>{sign}</tspan><tspan style='font-weight:800'>{num}</tspan></text>",
+         f"<text x='10' y='58' style='{MO};font-size:4.8px;font-weight:600;letter-spacing:.4px;fill:{K}'>{dayi}日目 · DAY {dayi:03d} / {cycle} · {pct}%</text>",
+         f"<rect x='{tx}' y='{ty}' width='{tw}' height='.6' fill='{K}' opacity='.25'/>",
+         f"<rect x='{tx}' y='{ty - .7}' width='{tw * p:.1f}' height='2' fill='url(#pr)'/>"]
+    o += [f"<rect x='{tx + tw * f - .3:.1f}' y='{ty - 2}' width='.6' height='5' fill='{K}' opacity='.35'/>" for f in (0, .25, .5, .75, 1)]
+    o += [f"<circle cx='{mx:.1f}' cy='{ty + .3}' r='2.6' fill='{Yd}'/>",
+          f"<circle cx='{mx:.1f}' cy='{ty + .3}' r='2.6' fill='none' stroke='{Yd}' stroke-width='.8'><animate attributeName='r' values='2.6;7' dur='2.4s' repeatCount='indefinite'/><animate attributeName='opacity' values='.9;0' dur='2.4s' repeatCount='indefinite'/></circle>",
+          f"<text x='{tx}' y='{ty + 8}' style='{MO};font-size:4px;font-weight:600;fill:{M}'>START</text>",
+          f"<text x='{mx:.1f}' y='{ty - 5}' text-anchor='middle' style='{JJ};font-size:4px;font-weight:700;fill:{K}'>現在地</text>",
+          f"<text x='{tx + tw}' y='{ty + 8}' text-anchor='end' style='{MO};font-size:4px;font-weight:600;fill:{M}'>{ordinal(n)}</text>",
+          f"<rect x='{tx}' y='82' width='{tw}' height='.6' fill='{K}' opacity='.1'/>",
+          f"<g clip-path='url(#mq)'><text x='0' y='89.5' style='{JJ};font-size:5.4px;letter-spacing:.3px;fill:{M}'>{msg}"
+          f"<animateTransform attributeName='transform' type='translate' values='{tx + tw} 0;{tx - mw} 0' dur='{(tw + mw) / 16:.1f}s' repeatCount='indefinite'/></text></g>",
+          "</svg>"]
+    return "".join(o)
 
 
 def ticket_svg():
@@ -231,6 +277,7 @@ if __name__ == "__main__":
     today = datetime.now(TZ).date()
     svg, info = dday_svg(today)
     open("dday.svg", "w", encoding="utf-8").write(svg)
+    open("dday_w.svg", "w", encoding="utf-8").write(dday_w_svg(today))
     main, stub = ticket_svg()
     open("ticket.svg", "w", encoding="utf-8").write(main)
     open("stub.svg", "w", encoding="utf-8").write(stub)
