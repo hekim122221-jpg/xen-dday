@@ -250,6 +250,14 @@ def calendar_svg(today):
     return "".join(out)
 
 
+def today_svg(today):
+    """small right-aligned date label (page top-right), 2x pixel density"""
+    wd = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"][today.weekday()]
+    return ("<svg xmlns='http://www.w3.org/2000/svg' width='240' height='16' viewBox='0 0 120 8'>"
+            f"<text x='120' y='6.6' text-anchor='end' font-family='IBM Plex Mono,ui-monospace,Menlo,Consolas,monospace' font-weight='700' font-size='7' letter-spacing='1.3' fill='#2B333B'>"
+            f"{today:%Y.%m.%d}<tspan fill='#8A939B' font-weight='500'> · {wd}</tspan></text></svg>")
+
+
 def clock_svg(now):
     """Current-hour popup (hover on あした). GitHub regenerates it hourly, so it shows the hour, not minutes."""
     W, H = 210, 128
@@ -278,6 +286,7 @@ if __name__ == "__main__":
     svg, info = dday_svg(today)
     open("dday.svg", "w", encoding="utf-8").write(svg)
     open("dday_w.svg", "w", encoding="utf-8").write(dday_w_svg(today))
+    open("today.svg", "w", encoding="utf-8").write(today_svg(today))
     main, stub = ticket_svg()
     open("ticket.svg", "w", encoding="utf-8").write(main)
     open("stub.svg", "w", encoding="utf-8").write(stub)
